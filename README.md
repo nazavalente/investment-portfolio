@@ -1,8 +1,8 @@
 # Investment Portfolio Web Application
 
-Investment Portfolio Web Application is a full-stack web application designed to help users manage and monitor their investment portfolio. The application provides features for managing assets, categories, transactions, financial targets, watchlists, and portfolio dashboard summaries.
+Investment Portfolio Web Application is a full-stack web application designed to help users manage and monitor their investment portfolio. The application provides features for managing assets, investment categories, transactions, financial targets, watchlists, and portfolio dashboard summaries.
 
-This project was developed as a web-based portfolio management system using a separate frontend and backend architecture.
+This project was developed as a local full-stack web application using a separated frontend and backend architecture.
 
 ## Project Overview
 
@@ -10,8 +10,8 @@ The main purpose of this project is to provide a simple and structured platform 
 
 The system is divided into two main parts:
 
-- **Frontend**: user interface for interacting with the portfolio management system.
-- **Backend**: RESTful API for authentication, data management, and portfolio calculations.
+- **Frontend**: provides the user interface for interacting with the portfolio management system.
+- **Backend**: provides RESTful API services for authentication, data management, and portfolio-related calculations.
 
 ## Features
 
@@ -27,7 +27,7 @@ The application includes the following main features:
 - Dashboard summary
 - Portfolio allocation overview
 - Portfolio performance data
-- Profit/loss summary
+- Profit and loss summary
 
 ## Tech Stack
 
@@ -51,11 +51,12 @@ The application includes the following main features:
 - CORS
 - dotenv
 
-### Deployment Configuration
+### Local Development
 
-- Vercel for frontend deployment
-- Render for backend deployment
-- MySQL database connection through environment variables
+- Frontend runs locally using Vite
+- Backend runs locally using Express.js
+- MySQL database is used as the local database
+- Environment variables are managed using `.env` files
 
 ## Project Structure
 
@@ -79,6 +80,7 @@ investment-portfolio/
 │   └── package-lock.json
 │
 ├── frontend/
+│   ├── public/
 │   ├── src/
 │   │   ├── components/
 │   │   ├── context/
@@ -87,10 +89,13 @@ investment-portfolio/
 │   │   ├── styles/
 │   │   ├── App.jsx
 │   │   └── main.jsx
+│   ├── index.html
 │   ├── package.json
-│   └── package-lock.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
 │
-├── render.yaml
 ├── .gitignore
 └── README.md
 ```
@@ -102,7 +107,7 @@ The backend uses Prisma ORM with MySQL. The main database models include:
 - **User**: stores user account data.
 - **Category**: stores investment asset categories.
 - **Asset**: stores investment asset details.
-- **Transaction**: stores buy/sell transaction records.
+- **Transaction**: stores buy and sell transaction records.
 - **FinancialTarget**: stores user financial goals.
 - **Watchlist**: stores assets that users want to monitor.
 
@@ -266,7 +271,7 @@ Runs Prisma migration in development.
 npm run prisma:deploy
 ```
 
-Deploys Prisma migrations for production.
+Deploys Prisma migrations when needed for production migration workflows.
 
 ### Frontend
 
@@ -288,24 +293,20 @@ npm run preview
 
 Previews the production build locally.
 
-## Deployment
+## Local Development Notes
 
-This project is structured to support deployment using:
+This project is currently intended to run in a local development environment. The frontend and backend run separately, while the backend connects to a local MySQL database through environment variables.
 
-- **Vercel** for the frontend
-- **Render** for the backend
-
-The backend deployment configuration is included in:
+Local application URLs:
 
 ```text
-render.yaml
+Frontend: http://localhost:5173
+Backend:  http://localhost:5000
 ```
-
-The backend uses `/health` as the health check endpoint.
 
 ## My Contribution
 
-In this project, I worked on building a full-stack investment portfolio web application with a separated frontend and backend structure. My work involved developing user-facing portfolio management features, integrating frontend functionality with backend API services, organizing backend routes and database models, and preparing the project structure for deployment.
+In this project, I worked on building a full-stack investment portfolio web application with a separated frontend and backend structure. My work involved developing user-facing portfolio management features, integrating frontend functionality with backend REST API services, organizing backend routes and database models, and configuring the project to run locally with MySQL.
 
 ## What I Learned
 
@@ -318,7 +319,7 @@ Through this project, I strengthened my understanding of:
 - Database modeling with Prisma ORM
 - MySQL database connection
 - Portfolio-related data management
-- Deployment preparation using Vercel and Render
+- Local full-stack development setup using separate frontend, backend, and database environments
 - Project organization for a scalable web application
 
 ## Future Improvements
@@ -333,6 +334,7 @@ Several improvements can be made in future development, including:
 - Adding unit and integration testing
 - Improving security and role-based access control
 - Adding export features for transaction history and portfolio reports
+- Preparing deployment configuration if the project is developed further in the future
 
 ## Author
 
@@ -342,4 +344,4 @@ Telkom University
 
 ## Repository
 
-This repository contains the frontend, backend, database schema, and deployment configuration for the Investment Portfolio Web Application.
+This repository contains the frontend, backend, database schema, and documentation for the Investment Portfolio Web Application.

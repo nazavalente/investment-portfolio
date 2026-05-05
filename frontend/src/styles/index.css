@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --finance-primary: #E7EEF8;
+  --finance-accent: #42D7FF;
+  --finance-success: #76D39B;
+  --finance-danger: #FB7185;
+  --finance-bg: #182238;
+  --finance-surface: #071023;
+  --finance-border: #263450;
+  --finance-text-soft: #9AA6BB;
+}
+
+html {
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--finance-surface);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--finance-surface);
+  color: var(--finance-primary);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.fin-card {
+  background: var(--finance-bg);
+  border: 1px solid var(--finance-border);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+}
+
+.fin-muted {
+  color: var(--finance-text-soft);
+}

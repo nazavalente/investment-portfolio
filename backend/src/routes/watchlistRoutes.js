@@ -1,21 +1,13 @@
 import express from "express";
-import {
-  getWatchlists,
-  getWatchlistById,
-  createWatchlist,
-  updateWatchlist,
-  deleteWatchlist,
-} from "../controllers/watchlistController.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
+import { controllers, middlewares } from "../container.js";
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
-router.get("/", getWatchlists);
-router.get("/:id", getWatchlistById);
-router.post("/", createWatchlist);
-router.put("/:id", updateWatchlist);
-router.delete("/:id", deleteWatchlist);
+router.use(middlewares.auth);
+router.get("/", controllers.watchlist.getAll);
+router.get("/:id", controllers.watchlist.getById);
+router.post("/", controllers.watchlist.create);
+router.put("/:id", controllers.watchlist.update);
+router.delete("/:id", controllers.watchlist.delete);
 
 export default router;

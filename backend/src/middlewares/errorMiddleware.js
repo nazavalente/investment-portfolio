@@ -6,7 +6,7 @@ const errorMiddleware = (err, req, res, next) => {
   const statusCode = err.status || 500;
   const message = err.message || "Terjadi kesalahan pada server";
 
-  return errorResponse(res, message, statusCode);
+  return errorResponse(res, message, statusCode, err.errors || null);
 };
 
 export default errorMiddleware;

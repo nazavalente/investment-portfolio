@@ -1,22 +1,23 @@
-import jwt from "jsonwebtoken";
 import { errorResponse } from "../utils/responseFormatter.js";
 
-const authMiddleware = (req, res, next) => {
-  try {
+export default class AuthMiddleware {
+  constructor(tokenService) {
+    this.tokenService = tokenService;
+    this.handle = this.handle.bind(this);
+  }
+
+  handle(req, res, next) {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return errorResponse(res, "Token tidak ditemukan", 401);
     }
 
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return errorResponse(res, "Token tidak valid", 401);
+    try {
+      req.user = this.tokenService.verify(authHeader.slice(7));
+      return next();
+    } catch {
+      return errorResponse(res, "Token tidak valid", 401);
+    }
   }
-};
-
-export default authMiddleware;
+}

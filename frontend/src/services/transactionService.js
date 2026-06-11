@@ -1,28 +1,37 @@
 import api from "./api";
+import CrudService from "./CrudService";
 
-export const transactionService = {
-  getAllTransactions: async () => {
-    const response = await api.get("/transactions");
-    return response.data.data;
-  },
+class TransactionService extends CrudService {
+  constructor(httpClient) {
+    super(httpClient, "/transactions");
+    this.bindMethods(
+      "getAllTransactions",
+      "getTransactionById",
+      "createTransaction",
+      "updateTransaction",
+      "deleteTransaction"
+    );
+  }
 
-  getTransactionById: async (id) => {
-    const response = await api.get(`/transactions/${id}`);
-    return response.data.data;
-  },
+  getAllTransactions() {
+    return this.getAll();
+  }
 
-  createTransaction: async (payload) => {
-    const response = await api.post("/transactions", payload);
-    return response.data.data;
-  },
+  getTransactionById(id) {
+    return this.getById(id);
+  }
 
-  updateTransaction: async (id, payload) => {
-    const response = await api.put(`/transactions/${id}`, payload);
-    return response.data.data;
-  },
+  createTransaction(payload) {
+    return this.create(payload);
+  }
 
-  deleteTransaction: async (id) => {
-    const response = await api.delete(`/transactions/${id}`);
-    return response.data;
-  },
-};
+  updateTransaction(id, payload) {
+    return this.update(id, payload);
+  }
+
+  deleteTransaction(id) {
+    return this.remove(id);
+  }
+}
+
+export const transactionService = new TransactionService(api);

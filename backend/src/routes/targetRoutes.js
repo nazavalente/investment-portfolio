@@ -1,21 +1,13 @@
 import express from "express";
-import {
-  getTargets,
-  getTargetById,
-  createTarget,
-  updateTarget,
-  deleteTarget,
-} from "../controllers/targetController.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
+import { controllers, middlewares } from "../container.js";
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
-router.get("/", getTargets);
-router.get("/:id", getTargetById);
-router.post("/", createTarget);
-router.put("/:id", updateTarget);
-router.delete("/:id", deleteTarget);
+router.use(middlewares.auth);
+router.get("/", controllers.target.getAll);
+router.get("/:id", controllers.target.getById);
+router.post("/", controllers.target.create);
+router.put("/:id", controllers.target.update);
+router.delete("/:id", controllers.target.delete);
 
 export default router;

@@ -1,28 +1,37 @@
 import api from "./api";
+import CrudService from "./CrudService";
 
-export const watchlistService = {
-  getAllWatchlistItems: async () => {
-    const response = await api.get("/watchlist");
-    return response.data.data;
-  },
+class WatchlistService extends CrudService {
+  constructor(httpClient) {
+    super(httpClient, "/watchlist");
+    this.bindMethods(
+      "getAllWatchlistItems",
+      "getWatchlistItemById",
+      "createWatchlistItem",
+      "updateWatchlistItem",
+      "deleteWatchlistItem"
+    );
+  }
 
-  getWatchlistItemById: async (id) => {
-    const response = await api.get(`/watchlist/${id}`);
-    return response.data.data;
-  },
+  getAllWatchlistItems() {
+    return this.getAll();
+  }
 
-  createWatchlistItem: async (payload) => {
-    const response = await api.post("/watchlist", payload);
-    return response.data.data;
-  },
+  getWatchlistItemById(id) {
+    return this.getById(id);
+  }
 
-  updateWatchlistItem: async (id, payload) => {
-    const response = await api.put(`/watchlist/${id}`, payload);
-    return response.data.data;
-  },
+  createWatchlistItem(payload) {
+    return this.create(payload);
+  }
 
-  deleteWatchlistItem: async (id) => {
-    const response = await api.delete(`/watchlist/${id}`);
-    return response.data;
-  },
-};
+  updateWatchlistItem(id, payload) {
+    return this.update(id, payload);
+  }
+
+  deleteWatchlistItem(id) {
+    return this.remove(id);
+  }
+}
+
+export const watchlistService = new WatchlistService(api);

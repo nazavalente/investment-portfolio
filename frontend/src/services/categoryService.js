@@ -1,28 +1,37 @@
 import api from "./api";
+import CrudService from "./CrudService";
 
-export const categoryService = {
-  getAllCategories: async () => {
-    const response = await api.get("/categories");
-    return response.data.data;
-  },
+class CategoryService extends CrudService {
+  constructor(httpClient) {
+    super(httpClient, "/categories");
+    this.bindMethods(
+      "getAllCategories",
+      "getCategoryById",
+      "createCategory",
+      "updateCategory",
+      "deleteCategory"
+    );
+  }
 
-  getCategoryById: async (id) => {
-    const response = await api.get(`/categories/${id}`);
-    return response.data.data;
-  },
+  getAllCategories() {
+    return this.getAll();
+  }
 
-  createCategory: async (payload) => {
-    const response = await api.post("/categories", payload);
-    return response.data.data;
-  },
+  getCategoryById(id) {
+    return this.getById(id);
+  }
 
-  updateCategory: async (id, payload) => {
-    const response = await api.put(`/categories/${id}`, payload);
-    return response.data.data;
-  },
+  createCategory(payload) {
+    return this.create(payload);
+  }
 
-  deleteCategory: async (id) => {
-    const response = await api.delete(`/categories/${id}`);
-    return response.data;
-  },
-};
+  updateCategory(id, payload) {
+    return this.update(id, payload);
+  }
+
+  deleteCategory(id) {
+    return this.remove(id);
+  }
+}
+
+export const categoryService = new CategoryService(api);

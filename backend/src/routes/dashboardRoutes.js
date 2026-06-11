@@ -1,19 +1,12 @@
 import express from "express";
-import {
-  getDashboardSummary,
-  getPortfolioAllocation,
-  getPortfolioPerformance,
-  getProfitLossSummary,
-} from "../controllers/dashboardController.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
+import { controllers, middlewares } from "../container.js";
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
-router.get("/summary", getDashboardSummary);
-router.get("/allocation", getPortfolioAllocation);
-router.get("/performance", getPortfolioPerformance);
-router.get("/profit-loss", getProfitLossSummary);
+router.use(middlewares.auth);
+router.get("/summary", controllers.dashboard.getSummary);
+router.get("/allocation", controllers.dashboard.getAllocation);
+router.get("/performance", controllers.dashboard.getPerformance);
+router.get("/profit-loss", controllers.dashboard.getProfitLoss);
 
 export default router;

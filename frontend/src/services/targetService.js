@@ -1,28 +1,37 @@
 import api from "./api";
+import CrudService from "./CrudService";
 
-export const targetService = {
-  getAllTargets: async () => {
-    const response = await api.get("/targets");
-    return response.data.data;
-  },
+class TargetService extends CrudService {
+  constructor(httpClient) {
+    super(httpClient, "/targets");
+    this.bindMethods(
+      "getAllTargets",
+      "getTargetById",
+      "createTarget",
+      "updateTarget",
+      "deleteTarget"
+    );
+  }
 
-  getTargetById: async (id) => {
-    const response = await api.get(`/targets/${id}`);
-    return response.data.data;
-  },
+  getAllTargets() {
+    return this.getAll();
+  }
 
-  createTarget: async (payload) => {
-    const response = await api.post("/targets", payload);
-    return response.data.data;
-  },
+  getTargetById(id) {
+    return this.getById(id);
+  }
 
-  updateTarget: async (id, payload) => {
-    const response = await api.put(`/targets/${id}`, payload);
-    return response.data.data;
-  },
+  createTarget(payload) {
+    return this.create(payload);
+  }
 
-  deleteTarget: async (id) => {
-    const response = await api.delete(`/targets/${id}`);
-    return response.data;
-  },
-};
+  updateTarget(id, payload) {
+    return this.update(id, payload);
+  }
+
+  deleteTarget(id) {
+    return this.remove(id);
+  }
+}
+
+export const targetService = new TargetService(api);

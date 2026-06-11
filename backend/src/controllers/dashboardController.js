@@ -1,43 +1,49 @@
-import {
-  getDashboardSummaryData,
-  getPortfolioAllocationData,
-  getPortfolioPerformanceData,
-  getProfitLossSummaryData,
-} from "../services/dashboardService.js";
-import { errorResponse, successResponse } from "../utils/responseFormatter.js";
+import BaseController from "../core/BaseController.js";
 
-export const getDashboardSummary = async (req, res) => {
-  try {
-    const summary = await getDashboardSummaryData(req.user.id);
-    return successResponse(res, summary, "Ringkasan dashboard berhasil diambil");
-  } catch (error) {
-    return errorResponse(res, error.message, error.status || 500);
-  }
-};
+export default class DashboardController extends BaseController {
+  constructor(dashboardService) {
+    super();
+    this.dashboardService = dashboardService;
 
-export const getPortfolioAllocation = async (req, res) => {
-  try {
-    const allocation = await getPortfolioAllocationData(req.user.id);
-    return successResponse(res, allocation, "Data alokasi portofolio berhasil diambil");
-  } catch (error) {
-    return errorResponse(res, error.message, error.status || 500);
+    this.getSummary = this.getSummary.bind(this);
+    this.getAllocation = this.getAllocation.bind(this);
+    this.getPerformance = this.getPerformance.bind(this);
+    this.getProfitLoss = this.getProfitLoss.bind(this);
   }
-};
 
-export const getPortfolioPerformance = async (req, res) => {
-  try {
-    const performance = await getPortfolioPerformanceData(req.user.id);
-    return successResponse(res, performance, "Data performa portofolio berhasil diambil");
-  } catch (error) {
-    return errorResponse(res, error.message, error.status || 500);
+  getSummary(req, res, next) {
+    return this.execute(next, async () => {
+      const data = await this.dashboardService.getSummary(req.user.id);
+      return this.success(res, data, "Ringkasan dashboard berhasil diambil");
+    });
   }
-};
 
-export const getProfitLossSummary = async (req, res) => {
-  try {
-    const summary = await getProfitLossSummaryData(req.user.id);
-    return successResponse(res, summary, "Ringkasan profit/loss berhasil diambil");
-  } catch (error) {
-    return errorResponse(res, error.message, error.status || 500);
+  getAllocation(req, res, next) {
+    return this.execute(next, async () => {
+      const data = await this.dashboardService.getAllocation(req.user.id);
+      return this.success(
+        res,
+        data,
+        "Data alokasi portofolio berhasil diambil"
+      );
+    });
   }
-};
+
+  getPerformance(req, res, next) {
+    return this.execute(next, async () => {
+      const data = await this.dashboardService.getPerformance(req.user.id);
+      return this.success(
+        res,
+        data,
+        "Data performa portofolio berhasil diambil"
+      );
+    });
+  }
+
+  getProfitLoss(req, res, next) {
+    return this.execute(next, async () => {
+      const data = await this.dashboardService.getProfitLoss(req.user.id);
+      return this.success(res, data, "Ringkasan profit/loss berhasil diambil");
+    });
+  }
+}

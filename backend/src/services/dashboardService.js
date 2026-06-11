@@ -1,107 +1,89 @@
-import prisma from "../config/db.js";
-import {
-  formatDashboardPerformance,
-  summarizeTransactions,
-} from "./calculationService.js";
-
-export const getDashboardSummaryData = async (userId) => {
-  const assets = await prisma.asset.findMany({
-    where: { userId },
-    include: { transactions: true },
-  });
-
-  const totalTargets = await prisma.financialTarget.count({
-    where: { userId },
-  });
-
-  const assetSummaries = assets.map((asset) => ({
-    asset,
-    summary: summarizeTransactions(asset.transactions, asset.currentPrice),
-  }));
-
-  const activeAssets = assetSummaries.filter(
-    ({ summary }) => summary.totalQuantity > 0
-  );
-
-  let totalPortfolio = 0;
-  let totalProfitLoss = 0;
-
-  for (const { summary } of assetSummaries) {
-    totalPortfolio += summary.currentValue;
-    totalProfitLoss += summary.totalProfitLoss;
+export default class DashboardService {
+  constructor({
+    assetRepository,
+    targetRepository,
+    portfolioCalculator,
+    responseMapper,
+  }) {
+    this.assetRepository = assetRepository;
+    this.targetRepository = targetRepository;
+    this.portfolioCalculator = portfolioCalculator;
+    this.responseMapper = responseMapper;
   }
 
-  return {
-    totalPortfolio,
-    totalProfitLoss,
-    totalAssets: activeAssets.length,
-    totalTargets,
-  };
-};
+  async getSummary(userId) {
+    const [assets, totalTargets] = await Promise.all([
+      this.assetRepository.findAllWithTransactions(userId),
+      this.targetRepository.countByUser(userId),
+    ]);
+    const summaries = assets.map((asset) =>
+      this.portfolioCalculator.summarize(
+        asset.transactions,
+        asset.currentPrice
+      )
+    );
 
-export const getPortfolioAllocationData = async (userId) => {
-  const assets = await prisma.asset.findMany({
-    where: { userId },
-    include: { transactions: true },
-  });
-
-  const grouped = {};
-
-  for (const asset of assets) {
-    const summary = summarizeTransactions(asset.transactions, asset.currentPrice);
-
-    if (summary.currentValue <= 0 || summary.totalQuantity <= 0) {
-      continue;
-    }
-
-    const key = asset.assetType || "Lainnya";
-
-    if (!grouped[key]) {
-      grouped[key] = 0;
-    }
-
-    grouped[key] += summary.currentValue;
+    return {
+      totalPortfolio: summaries.reduce(
+        (total, summary) => total + summary.currentValue,
+        0
+      ),
+      totalProfitLoss: summaries.reduce(
+        (total, summary) => total + summary.totalProfitLoss,
+        0
+      ),
+      totalAssets: summaries.filter((summary) => summary.totalQuantity > 0)
+        .length,
+      totalTargets,
+    };
   }
 
-  return Object.entries(grouped).map(([name, value]) => ({
-    name,
-    value,
-  }));
-};
+  async getAllocation(userId) {
+    const assets = await this.assetRepository.findAllWithTransactions(userId);
+    const grouped = new Map();
 
-export const getPortfolioPerformanceData = async (userId) => {
-  const assets = await prisma.asset.findMany({
-    where: { userId },
-    include: { transactions: true },
-  });
+    for (const asset of assets) {
+      const summary = this.portfolioCalculator.summarize(
+        asset.transactions,
+        asset.currentPrice
+      );
+      if (summary.currentValue <= 0 || summary.totalQuantity <= 0) continue;
 
-  return assets
-    .map(formatDashboardPerformance)
-    .filter((item) => item.current_value > 0 && item.remaining_quantity > 0);
-};
-
-export const getProfitLossSummaryData = async (userId) => {
-  const assets = await prisma.asset.findMany({
-    where: { userId },
-    include: { transactions: true },
-  });
-
-  let totalProfit = 0;
-  let totalLoss = 0;
-
-  for (const asset of assets) {
-    const summary = summarizeTransactions(asset.transactions, asset.currentPrice);
-
-    if (summary.totalProfitLoss > 0) {
-      totalProfit += summary.totalProfitLoss;
-    } else if (summary.totalProfitLoss < 0) {
-      totalLoss += Math.abs(summary.totalProfitLoss);
+      const key = asset.assetType || "Lainnya";
+      grouped.set(key, (grouped.get(key) || 0) + summary.currentValue);
     }
+
+    return Array.from(grouped, ([name, value]) => ({ name, value }));
   }
 
-  return {
-    totalProfit,
-    totalLoss,
-    netProfitLoss: totalProfit - totalLoss,
-  };
-};
+  async getPerformance(userId) {
+    const assets = await this.assetRepository.findAllWithTransactions(userId);
+    return assets
+      .map((asset) => this.responseMapper.dashboardPerformance(asset))
+      .filter(
+        (item) => item.current_value > 0 && item.remaining_quantity > 0
+      );
+  }
+
+  async getProfitLoss(userId) {
+    const assets = await this.assetRepository.findAllWithTransactions(userId);
+    let totalProfit = 0;
+    let totalLoss = 0;
+
+    for (const asset of assets) {
+      const total = this.portfolioCalculator.summarize(
+        asset.transactions,
+        asset.currentPrice
+      ).totalProfitLoss;
+
+      if (total > 0) totalProfit += total;
+      if (total < 0) totalLoss += Math.abs(total);
+    }
+
+    return {
+      totalProfit,
+      totalLoss,
+      netProfitLoss: totalProfit - totalLoss,
+    };
+  }
+}

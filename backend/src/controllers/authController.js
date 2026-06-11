@@ -1,51 +1,33 @@
-import {
-  getProfile,
-  loginUser,
-  registerUser,
-} from "../services/authService.js";
-import {
-  errorResponse,
-  successResponse,
-} from "../utils/responseFormatter.js";
+import BaseController from "../core/BaseController.js";
 
-export const register = async (req, res) => {
-  try {
-    const user = await registerUser(req.body);
+export default class AuthController extends BaseController {
+  constructor(authService) {
+    super();
+    this.authService = authService;
 
-    return successResponse(res, user, "Register berhasil", 201);
-  } catch (error) {
-    return errorResponse(
-      res,
-      error.message || "Terjadi kesalahan pada server",
-      error.status || 500
-    );
+    this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+    this.getMe = this.getMe.bind(this);
   }
-};
 
-export const login = async (req, res) => {
-  try {
-    const data = await loginUser(req.body);
-
-    return successResponse(res, data, "Login berhasil", 200);
-  } catch (error) {
-    return errorResponse(
-      res,
-      error.message || "Terjadi kesalahan pada server",
-      error.status || 500
-    );
+  register(req, res, next) {
+    return this.execute(next, async () => {
+      const user = await this.authService.register(req.body);
+      return this.success(res, user, "Register berhasil", 201);
+    });
   }
-};
 
-export const getMe = async (req, res) => {
-  try {
-    const user = await getProfile(req.user.id);
-
-    return successResponse(res, user, "Data profil berhasil diambil", 200);
-  } catch (error) {
-    return errorResponse(
-      res,
-      error.message || "Terjadi kesalahan pada server",
-      error.status || 500
-    );
+  login(req, res, next) {
+    return this.execute(next, async () => {
+      const data = await this.authService.login(req.body);
+      return this.success(res, data, "Login berhasil");
+    });
   }
-};
+
+  getMe(req, res, next) {
+    return this.execute(next, async () => {
+      const user = await this.authService.getProfile(req.user.id);
+      return this.success(res, user, "Data profil berhasil diambil");
+    });
+  }
+}

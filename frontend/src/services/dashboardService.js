@@ -1,23 +1,32 @@
 import api from "./api";
+import HttpService from "./HttpService";
 
-export const dashboardService = {
-  getSummary: async () => {
-    const response = await api.get("/dashboard/summary");
-    return response.data.data;
-  },
+class DashboardService extends HttpService {
+  constructor(httpClient) {
+    super(httpClient);
+    this.bindMethods(
+      "getSummary",
+      "getAllocation",
+      "getPerformance",
+      "getProfitLossSummary"
+    );
+  }
 
-  getAllocation: async () => {
-    const response = await api.get("/dashboard/allocation");
-    return response.data.data;
-  },
+  async getSummary() {
+    return (await this.get("/dashboard/summary")).data;
+  }
 
-  getPerformance: async () => {
-    const response = await api.get("/dashboard/performance");
-    return response.data.data;
-  },
+  async getAllocation() {
+    return (await this.get("/dashboard/allocation")).data;
+  }
 
-  getProfitLossSummary: async () => {
-    const response = await api.get("/dashboard/profit-loss");
-    return response.data.data;
-  },
-};
+  async getPerformance() {
+    return (await this.get("/dashboard/performance")).data;
+  }
+
+  async getProfitLossSummary() {
+    return (await this.get("/dashboard/profit-loss")).data;
+  }
+}
+
+export const dashboardService = new DashboardService(api);

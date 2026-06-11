@@ -1,28 +1,37 @@
 import api from "./api";
+import CrudService from "./CrudService";
 
-export const assetService = {
-  getAllAssets: async () => {
-    const response = await api.get("/assets");
-    return response.data.data;
-  },
+class AssetService extends CrudService {
+  constructor(httpClient) {
+    super(httpClient, "/assets");
+    this.bindMethods(
+      "getAllAssets",
+      "getAssetById",
+      "createAsset",
+      "updateAsset",
+      "deleteAsset"
+    );
+  }
 
-  getAssetById: async (id) => {
-    const response = await api.get(`/assets/${id}`);
-    return response.data.data;
-  },
+  getAllAssets() {
+    return this.getAll();
+  }
 
-  createAsset: async (payload) => {
-    const response = await api.post("/assets", payload);
-    return response.data.data;
-  },
+  getAssetById(id) {
+    return this.getById(id);
+  }
 
-  updateAsset: async (id, payload) => {
-    const response = await api.put(`/assets/${id}`, payload);
-    return response.data.data;
-  },
+  createAsset(payload) {
+    return this.create(payload);
+  }
 
-  deleteAsset: async (id) => {
-    const response = await api.delete(`/assets/${id}`);
-    return response.data;
-  },
-};
+  updateAsset(id, payload) {
+    return this.update(id, payload);
+  }
+
+  deleteAsset(id) {
+    return this.remove(id);
+  }
+}
+
+export const assetService = new AssetService(api);

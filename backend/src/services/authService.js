@@ -1,83 +1,50 @@
-import prisma from "../config/db.js";
-import generateToken from "../utils/generateToken.js";
-import { comparePassword, hashPassword } from "../utils/hashPassword.js";
+import AppError from "../core/AppError.js";
 
-const createError = (message, status) => {
-  const error = new Error(message);
-  error.status = status;
-  return error;
-};
-
-export const registerUser = async ({ name, email, password }) => {
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existingUser) {
-    throw createError("Email sudah digunakan", 409);
+export default class AuthService {
+  constructor({ userRepository, passwordHasher, tokenService }) {
+    this.userRepository = userRepository;
+    this.passwordHasher = passwordHasher;
+    this.tokenService = tokenService;
   }
 
-  const hashedPassword = await hashPassword(password);
+  async register({ name, email, password }) {
+    const existingUser = await this.userRepository.findByEmail(email);
 
-  const user = await prisma.user.create({
-    data: {
+    if (existingUser) {
+      throw new AppError("Email sudah digunakan", 409);
+    }
+
+    const user = await this.userRepository.create({
       name,
       email,
-      password: hashedPassword,
-    },
-  });
+      password: await this.passwordHasher.hash(password),
+    });
 
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-  };
-};
-
-export const loginUser = async ({ email, password }) => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (!user) {
-    throw createError("Email atau password salah", 401);
+    return { id: user.id, name: user.name, email: user.email };
   }
 
-  const isMatch = await comparePassword(password, user.password);
+  async login({ email, password }) {
+    const user = await this.userRepository.findByEmail(email);
+    const passwordMatches =
+      user && (await this.passwordHasher.compare(password, user.password));
 
-  if (!isMatch) {
-    throw createError("Email atau password salah", 401);
+    if (!passwordMatches) {
+      throw new AppError("Email atau password salah", 401);
+    }
+
+    return {
+      token: this.tokenService.generate({ id: user.id, email: user.email }),
+      user: { id: user.id, name: user.name, email: user.email },
+    };
   }
 
-  const token = generateToken({
-    id: user.id,
-    email: user.email,
-  });
+  async getProfile(userId) {
+    const user = await this.userRepository.findProfileById(userId);
 
-  return {
-    token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    },
-  };
-};
+    if (!user) {
+      throw new AppError("User tidak ditemukan", 404);
+    }
 
-export const getProfile = async (userId) => {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      createdAt: true,
-    },
-  });
-
-  if (!user) {
-    throw createError("User tidak ditemukan", 404);
+    return user;
   }
-
-  return user;
-};
+}

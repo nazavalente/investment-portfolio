@@ -1,18 +1,23 @@
 import api from "./api";
+import HttpService from "./HttpService";
 
-export const authService = {
-  register: async (payload) => {
-    const response = await api.post("/auth/register", payload);
-    return response.data;
-  },
+class AuthService extends HttpService {
+  constructor(httpClient) {
+    super(httpClient);
+    this.bindMethods("register", "login", "getProfile");
+  }
 
-  login: async (payload) => {
-    const response = await api.post("/auth/login", payload);
-    return response.data;
-  },
+  register(payload) {
+    return this.post("/auth/register", payload);
+  }
 
-  getProfile: async () => {
-    const response = await api.get("/auth/me");
-    return response.data;
-  },
-};
+  login(payload) {
+    return this.post("/auth/login", payload);
+  }
+
+  getProfile() {
+    return this.get("/auth/me");
+  }
+}
+
+export const authService = new AuthService(api);

@@ -304,44 +304,58 @@ Frontend: http://localhost:5173
 Backend:  http://localhost:5000
 ```
 
-## My Contribution
+## Project Team and Contribution
 
-In this project, I worked on building a full-stack investment portfolio web application with a separated frontend and backend structure. My work involved developing user-facing portfolio management features, integrating frontend functionality with backend REST API services, organizing backend routes and database models, and configuring the project to run locally with MySQL.
+This project was developed as a full-stack investment portfolio web application using a separated frontend and backend architecture. The system provides features for managing investment assets, categories, transactions, financial targets, watchlists, dashboard summaries, authentication, and database integration.
 
-## What I Learned
+### Team Members
 
-Through this project, I strengthened my understanding of:
+* **Nazario Jose Valente da Cruz**
+  Role: Full-Stack Developer
+  Contribution: Designed and developed the main frontend and backend structure, implemented portfolio management features, integrated frontend functionality with backend REST API services, organized backend routes and database models, configured Prisma ORM with MySQL, implemented JWT-based authentication, and prepared the project documentation.
 
-- Full-stack web application development
-- Frontend and backend separation
-- REST API integration
-- Authentication using JWT
-- Database modeling with Prisma ORM
-- MySQL database connection
-- Portfolio-related data management
-- Local full-stack development setup using separate frontend, backend, and database environments
-- Project organization for a scalable web application
+* **Mohamed Ali Ibrahim Gadelkarim**
+  Role: Project Support and Documentation Reviewer
+  Contribution: Assisted in reviewing project requirements, checking the application flow, testing the main features, giving feedback on user interface consistency, and supporting documentation review.
+
+## What We Learned
+
+Through this project, we strengthened our understanding of:
+
+* Full-stack web application development
+* Frontend and backend separation
+* REST API integration
+* Authentication using JWT
+* Database modeling with Prisma ORM
+* MySQL database connection
+* Portfolio-related data management
+* Local full-stack development setup using separate frontend, backend, and database environments
+* Project organization for a scalable web application
+* Application flow review and documentation improvement
 
 ## Future Improvements
 
 Several improvements can be made in future development, including:
 
-- Improving dashboard visualization and portfolio analytics
-- Adding real-time market price integration
-- Adding investment return calculation
-- Improving user interface consistency
-- Adding more validation and error handling
-- Adding unit and integration testing
-- Improving security and role-based access control
-- Adding export features for transaction history and portfolio reports
-- Preparing deployment configuration if the project is developed further in the future
+* Improving dashboard visualization and portfolio analytics
+* Adding real-time market price integration
+* Adding investment return calculation
+* Improving user interface consistency
+* Adding more validation and error handling
+* Adding unit and integration testing
+* Improving security and role-based access control
+* Adding export features for transaction history and portfolio reports
+* Preparing deployment configuration if the project is developed further in the future
 
-## Author
+## Authors
 
-Nazario Jose Valente da Cruz  
-Informatics Student  
-Telkom University
+* Nazario Jose Valente da Cruz
+  Informatics Student
+  Telkom University
 
-## Repository
+* Mohamed Ali Ibrahim Gadelkarim
+  Informatics Student
+  Telkom University
+
 
 This repository contains the frontend, backend, database schema, and documentation for the Investment Portfolio Web Application.

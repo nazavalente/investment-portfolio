@@ -304,20 +304,6 @@ Frontend: http://localhost:5173
 Backend:  http://localhost:5000
 ```
 
-## Project Team and Contribution
-
-This project was developed as a full-stack investment portfolio web application using a separated frontend and backend architecture. The system provides features for managing investment assets, categories, transactions, financial targets, watchlists, dashboard summaries, authentication, and database integration.
-
-### Team Members
-
-* **Nazario Jose Valente da Cruz**
-  Role: Full-Stack Developer
-  Contribution: Designed and developed the main frontend and backend structure, implemented portfolio management features, integrated frontend functionality with backend REST API services, organized backend routes and database models, configured Prisma ORM with MySQL, implemented JWT-based authentication, and prepared the project documentation.
-
-* **Mohamed Ali Ibrahim Gadelkarim**
-  Role: Project Support and Documentation Reviewer
-  Contribution: Assisted in reviewing project requirements, checking the application flow, testing the main features, giving feedback on user interface consistency, and supporting documentation review.
-
 ## What We Learned
 
 Through this project, we strengthened our understanding of:
